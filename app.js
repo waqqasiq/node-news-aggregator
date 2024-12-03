@@ -1,4 +1,5 @@
 const dotenv = require('dotenv');
+dotenv.config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -9,9 +10,6 @@ var indexRouter = require('./routes/index');
 var articleRouter = require('./routes/article');
 
 const cors = require('cors');
-
-// Load environment variables
-dotenv.config();
 
 var app = express();
 

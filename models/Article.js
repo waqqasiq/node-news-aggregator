@@ -47,4 +47,13 @@ const Article = sequelize.define('article', {
     timestamps: true
 });
 
+Article.associate = (models) => {
+    // Many-to-many relationship between Article and Topic
+    Article.belongsToMany(models.Topic, {
+        through: 'article_topics', // The junction table
+        foreignKey: 'topic_id',
+        otherKey: 'article_id',
+    });
+};
+
 module.exports = Article;

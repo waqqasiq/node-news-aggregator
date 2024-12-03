@@ -12,8 +12,8 @@ async function fetchArticles(feedUrl) {
 
         // Parse and structure articles
         const articles = feed.items.map(item => ({
-            title: item.title || 'Untitled',
-            link: item.link || '',
+            title: item.title,
+            link: item.link,
             description: item.contentSnippet || item.description || '',
             pub_date: item.isoDate || item.pubDate || new Date().toISOString(),
             creator: item.creator || item.author || 'Unknown',
