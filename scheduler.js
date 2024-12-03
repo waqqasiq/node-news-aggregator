@@ -3,7 +3,7 @@ const { fetchArticles } = require('./services/rssService'); // Adjust the path t
 const { saveArticles } = require('./services/articleService'); // Adjust the path to your service
 
 // Schedule the task to run at the start of every hour
-schedule.scheduleJob('0 * * * *', async () => {
+schedule.scheduleJob('*/2 * * * *', async () => {
     console.log('Fetching articles...');
     try {
         const articles = await fetchArticles('https://www.wired.com/feed/rss');

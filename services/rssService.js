@@ -16,7 +16,8 @@ async function fetchArticles(feedUrl) {
             link: item.link || '',
             description: item.contentSnippet || item.description || '',
             pub_date: item.isoDate || item.pubDate || new Date().toISOString(),
-            creator: item.creator || item.author || 'Unknown'
+            creator: item.creator || item.author || 'Unknown',
+            feed_channel: feedUrl
         }));
 
         return articles;
