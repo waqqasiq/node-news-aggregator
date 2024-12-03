@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
+const RSSParser = require('rss-parser');
+
 var sequelize = require('../config/db');
 
-const RSSParser = require('rss-parser');
 const parser = new RSSParser();
 
 async function fetchArticles(feedUrl) {
@@ -11,8 +12,10 @@ async function fetchArticles(feedUrl) {
     return feed.items.map(item => ({
       title: item.title,
       description: item.contentSnippet,
-      pubDate: new Date(item.pubDate),
-      sourceUrl: item.link
+      pub_date: new Date(item.pubDate),
+      link: item.link,
+      category: item.categories.join(","),
+      creator: item.creator
     }));
   } catch (error) {
     console.error(`Error fetching feed: ${feedUrl}`, error);
@@ -23,6 +26,7 @@ async function fetchArticles(feedUrl) {
 router.get('/fetch-articles', async (req, res, next) => {
     const { channel } = req.query;
     const data = await fetchArticles(channel);
+    console.log('data ', data);
     res.json(data);
 });
 
