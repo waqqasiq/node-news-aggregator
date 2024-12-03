@@ -9,18 +9,25 @@ const Article = sequelize.define('article', {
     },
     description:
     {
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT,
+        allowNull: false
     },
-    pubDate:
+    pub_date:
     {
         type: DataTypes.DATE,
-        field: 'pub_date'
+        allowNull: false
     },
     link:
     {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false
     },
     creator:
+    {
+        type: DataTypes.STRING
+    },
+    feed_channel:
     {
         type: DataTypes.STRING
     },

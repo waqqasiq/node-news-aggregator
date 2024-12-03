@@ -3,31 +3,57 @@ var router = express.Router();
 const RSSParser = require('rss-parser');
 
 var sequelize = require('../config/db');
+const { Article } = require('../models');
 
 const parser = new RSSParser();
 
-async function fetchArticles(feedUrl) {
-  try {
-    const feed = await parser.parseURL(feedUrl);
-    return feed.items.map(item => ({
-      title: item.title,
-      description: item.contentSnippet,
-      pub_date: new Date(item.pubDate),
-      link: item.link,
-      category: item.categories.join(","),
-      creator: item.creator
-    }));
-  } catch (error) {
-    console.error(`Error fetching feed: ${feedUrl}`, error);
-    return [];
-  }
+async function fetchArticles(channel_url) {
+    try {
+        const feed = await parser.parseURL(channel_url);
+        return feed.items.map(item => ({
+            title: item.title,
+            description: item.contentSnippet,
+            pub_date: new Date(item.pubDate),
+            link: item.link,
+            category: item.categories.join(","),
+            creator: item.creator,
+            feed_channel: channel_url
+        }));
+    } catch (error) {
+        console.error(`Error fetching feed: ${feedUrl}`, error);
+        return [];
+    }
 }
 
 router.get('/fetch-articles', async (req, res, next) => {
     const { channel } = req.query;
     const data = await fetchArticles(channel);
-    console.log('data ', data);
-    res.json(data);
+
+    if (data.length > 0) {
+        try {
+            // Prepare articles data to be inserted
+            const articles = data.map(item => {
+                return {
+                    title: item.title,
+                    link: item.link,
+                    description: item.description || '',
+                    pub_date: new Date(item.pub_date),
+                    creator: item.creator || 'Unknown',
+                    feed_channel: channel
+                }
+            });
+
+            // Bulk insert articles into the database
+            await Article.bulkCreate(articles, {
+                ignoreDuplicates: true
+            });
+
+        } catch (error) {
+            console.error('Error inserting articles: ', error);
+            return next(error); // Pass error to error-handling middleware
+        }
+    }
+    return res.json(data);
 });
 
 router.get('/get-articles', async (req, res, next) => {
