@@ -1,5 +1,5 @@
 const { fetchArticles } = require('../services/rssService');
-const { saveArticles } = require('../services/articleService');
+const { saveArticles, fetchFilteredArticles } = require('../services/articleService');
 
 
 const fetchAndSaveArticles = async (req, res, next) => {
@@ -31,6 +31,21 @@ const fetchAndSaveArticles = async (req, res, next) => {
     }
 };
 
+const getFilteredArticles = async (req, res, next) => {
+    try {
+        const { keyword, startDate, endDate } = req.query;
+
+        // Fetch articles from the service
+        const articles = await fetchFilteredArticles({ keyword, startDate, endDate });
+
+        res.json(articles);
+    } catch (error) {
+        console.error('Error fetching articles:', error);
+        next(error); // Pass the error to Express error-handling middleware
+    }
+};
+
 module.exports = {
     fetchAndSaveArticles,
+    getFilteredArticles
 };

@@ -1,18 +1,6 @@
 const { Article } = require('../models');
+const { Op } = require('sequelize');
 
-/**
- * Save articles to the database.
- * Ignores duplicates based on the `link` column.
- *
- * @param {Array} articles - Array of articles to save. Each article should have:
- *   - title
- *   - link
- *   - description
- *   - pub_date
- *   - creator
- *   - feed_channel
- * @returns {Promise<void>} - Resolves when all articles are saved.
- */
 async function saveArticles(articles) {
     if (!Array.isArray(articles) || articles.length === 0) {
         console.log('No articles to save.');
@@ -32,6 +20,20 @@ async function saveArticles(articles) {
     }
 }
 
+const fetchFilteredArticles = async ({ keyword, start_date, end_date }) => {
+    const where = {};
+
+    // Apply filters if provided
+    if (keyword) where.description = { [Op.like]: `%${keyword}%` };
+    if (start_date) where.pub_date = { [Op.gte]: new Date(start_date) };
+    if (end_date) where.pub_date = { [Op.lte]: new Date(end_date) };
+
+    // Query the database
+    return await Article.findAll({ where });
+};
+
+
 module.exports = {
     saveArticles,
+    fetchFilteredArticles
 };
