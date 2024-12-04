@@ -33,10 +33,10 @@ const fetchAndSaveArticles = async (req, res, next) => {
 
 const getFilteredArticles = async (req, res, next) => {
     try {
-        const { keyword, startDate, endDate } = req.query;
+        const { keyword, start_date, end_date } = req.query;
 
         // Fetch articles from the service
-        const articles = await fetchFilteredArticles({ keyword, startDate, endDate });
+        const articles = await fetchFilteredArticles({ keyword, start_date, end_date });
 
         res.json(articles);
     } catch (error) {
