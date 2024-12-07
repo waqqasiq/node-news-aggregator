@@ -4,10 +4,13 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
+const swaggerUi = require('swagger-ui-express');
 const { sequelize } = require('./models');
 
 var indexRouter = require('./routes/index');
 var articleRouter = require('./routes/article');
+
+const swaggerDocument = require('./swagger_output.json');
 
 const cors = require('cors');
 
@@ -40,6 +43,8 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'], // Add any additional headers required
   credentials: true,
 }));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/', indexRouter);
 app.use('/api/article', articleRouter);
