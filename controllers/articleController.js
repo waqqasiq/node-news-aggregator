@@ -3,15 +3,15 @@ const articleService = require('../services/articleService');
 
 
 const fetchAndSaveArticles = async (req, res, next) => {
-    const { channel } = req.query;
+    const { channel_url } = req.query;
 
-    if (!channel) {
+    if (!channel_url) {
         return res.status(400).json({ error: 'Channel query parameter is required.' });
     }
 
     try {
         // Fetch articles from the RSS feed
-        const articles = await rssService.fetchArticles(channel);
+        const articles = await rssService.fetchArticles(channel_url);
 
         if (articles.length > 0) {
             // Save articles to the database

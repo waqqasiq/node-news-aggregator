@@ -26,7 +26,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "channel",
+            "name": "channel_url",
             "in": "query",
             "type": "string"
           }
