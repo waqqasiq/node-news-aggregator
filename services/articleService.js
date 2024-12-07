@@ -8,15 +8,14 @@ async function saveArticles(articles) {
     }
 
     try {
-        // Use Sequelize's bulkCreate with ignoreDuplicates option
         await Article.bulkCreate(articles, {
-            ignoreDuplicates: true, // Ensures duplicate articles (based on unique key constraints) are ignored
+            ignoreDuplicates: true,
         });
 
         console.log(`${articles.length} articles processed for saving.`);
     } catch (error) {
         console.error('Error saving articles:', error);
-        throw error; // Propagate the error to the caller
+        throw error;
     }
 }
 

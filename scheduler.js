@@ -1,6 +1,6 @@
 const schedule = require('node-schedule');
-const rssService = require('./services/rssService'); // Adjust the path to your service
-const articleService = require('./services/articleService'); // Adjust the path to your service
+const rssService = require('./services/rssService'); 
+const articleService = require('./services/articleService');
 const rss_feeds = require('./config/rssFeeds');
 
 
