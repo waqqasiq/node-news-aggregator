@@ -1,16 +1,21 @@
 const schedule = require('node-schedule');
-const { fetchArticles } = require('./services/rssService'); // Adjust the path to your service
-const { saveArticles } = require('./services/articleService'); // Adjust the path to your service
+const rssService = require('./services/rssService'); // Adjust the path to your service
+const articleService = require('./services/articleService'); // Adjust the path to your service
+const rss_feeds = require('./config/rssFeeds');
 
 
-// Schedule the task to run at the start of every hour
-schedule.scheduleJob('*/2 * * * *', async () => {
-    console.log('Fetching articles...');
-    try {
-        const articles = await fetchArticles(process.env.FEED_CHANNEL_URL);
-        await saveArticles(articles); // Logic to save articles in MySQL
-        console.log('Articles saved successfully!');
-    } catch (error) {
-        console.error('Error during scheduled article fetching:', error);
+// Schedule the task to run every minute
+schedule.scheduleJob('*/1 * * * *', async () => {
+    console.log('Fetching articles from multiple feeds...');
+
+    for (const url of rss_feeds) {
+        try {
+            console.log(`Fetching articles from: ${url}`);
+            const articles = await rssService.fetchArticles(url);
+            await articleService.saveArticles(articles);
+            console.log(`Articles from ${url} saved successfully!`);
+        } catch (error) {
+            console.error(`Error fetching or saving articles for ${url}:`, error);
+        }
     }
 });

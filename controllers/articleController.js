@@ -1,5 +1,5 @@
-const { fetchArticles } = require('../services/rssService');
-const { saveArticles, fetchFilteredArticles } = require('../services/articleService');
+const rssService = require('../services/rssService');
+const articleService = require('../services/articleService');
 
 
 const fetchAndSaveArticles = async (req, res, next) => {
@@ -11,11 +11,11 @@ const fetchAndSaveArticles = async (req, res, next) => {
 
     try {
         // Fetch articles from the RSS feed
-        const articles = await fetchArticles(channel);
+        const articles = await rssService.fetchArticles(channel);
 
         if (articles.length > 0) {
             // Save articles to the database
-            await saveArticles(articles);
+            await articleService.saveArticles(articles);
             console.log('Articles saved successfully.');
         } else {
             console.log('No new articles to save.');
@@ -36,7 +36,7 @@ const getFilteredArticles = async (req, res, next) => {
         const { keyword, start_date, end_date } = req.query;
 
         // Fetch articles from the service
-        const articles = await fetchFilteredArticles({ keyword, start_date, end_date });
+        const articles = await articleService.fetchFilteredArticles({ keyword, start_date, end_date });
 
         res.json(articles);
     } catch (error) {
