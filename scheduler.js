@@ -4,8 +4,8 @@ const articleService = require('./services/articleService');
 const rss_feeds = require('./config/rssFeeds');
 
 
-// Schedule the task to run every minute
-schedule.scheduleJob('*/1 * * * *', async () => {
+// Schedule the task to run once at the start of every hour
+schedule.scheduleJob('0 * * * *', async () => {
     console.log('Fetching articles from multiple feeds...');
 
     for (const url of rss_feeds) {
