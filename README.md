@@ -101,17 +101,12 @@ Interactive API documentation is available through Swagger. Visit `/api-docs` af
      DB_NAME=news_aggregator
      ```
 
-4. Run database migrations (if applicable):
-   ```bash
-   npx sequelize-cli db:migrate
-   ```
-
-5. Start the server:
+4. Start the server:
    ```bash
    npm run start:dev
    ```
 
-6. Access Swagger API documentation:
+5. Access Swagger API documentation:
    - Navigate to `http://localhost:3010/api-docs` in your browser.
 
 ---
