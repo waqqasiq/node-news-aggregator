@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
+const ArticleTopic = require('./ArticleTopic');
 
 const Article = sequelize.define('article', {
     title:
@@ -20,7 +21,6 @@ const Article = sequelize.define('article', {
     link:
     {
         type: DataTypes.STRING,
-        unique: true,
         allowNull: false
     },
     creator:
@@ -32,6 +32,10 @@ const Article = sequelize.define('article', {
         type: DataTypes.STRING
     },
     topics:
+    {
+        type: DataTypes.STRING
+    },
+    thumbnail_url:
     {
         type: DataTypes.STRING
     },
@@ -48,12 +52,7 @@ const Article = sequelize.define('article', {
 });
 
 Article.associate = (models) => {
-    // Many-to-many relationship between Article and Topic
-    Article.belongsToMany(models.Topic, {
-        through: 'article_topics', // The junction table
-        foreignKey: 'topic_id',
-        otherKey: 'article_id',
-    });
+    Article.hasMany(ArticleTopic, { as: 'articleTopics', foreignKey: 'article_id' });
 };
 
 module.exports = Article;

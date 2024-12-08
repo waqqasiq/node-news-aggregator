@@ -1,6 +1,7 @@
 const rssService = require('../services/rssService');
 const articleService = require('../services/articleService');
-
+const topicService = require('../services/topicService');
+const { Article } = require('../models');
 
 const fetchAndSaveArticles = async (req, res, next) => {
     const { channel_url } = req.query;
@@ -33,10 +34,10 @@ const fetchAndSaveArticles = async (req, res, next) => {
 
 const getFilteredArticles = async (req, res, next) => {
     try {
-        const { keyword, start_date, end_date } = req.query;
+        const { keyword, start_date, end_date, page, limit } = req.query;
 
         // Fetch articles from the service
-        const articles = await articleService.fetchFilteredArticles({ keyword, start_date, end_date });
+        const articles = await articleService.fetchFilteredArticles({ keyword, start_date, end_date, page, limit });
 
         res.json(articles);
     } catch (error) {
@@ -45,7 +46,44 @@ const getFilteredArticles = async (req, res, next) => {
     }
 };
 
+const getArticleById = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        // Fetch the article along with associated topics
+        const article = await articleService.getArticleByIdWithTopics(id);
+        if (!article) {
+            return res.status(404).json({ error: 'Article not found' });
+        }
+        res.json(article);
+    } catch (error) {
+        console.error('Error in getArticleById:', error);
+        res.status(500).json({ error: 'Error fetching article' });
+    }
+};
+
+const getTopics =  async (req, res, next) => {
+    try {
+        // Fetch all article descriptions from the database
+        const articles = await Article.findAll({
+            attributes: ['description'], // Fetch only the 'description' column
+        });
+
+        // Extract descriptions into an array
+        const descriptions = articles.map((article) => article.description);
+
+        // Use `compromise` to extract topics
+        const topics = topicService.extractTopics(descriptions);
+
+        res.json({ topics });
+    } catch (error) {
+        console.error('Error fetching topics:', error);
+        res.status(500).json({ message: 'Failed to extract topics' });
+    }
+}
+
 module.exports = {
     fetchAndSaveArticles,
-    getFilteredArticles
+    getFilteredArticles,
+    getArticleById,
+    getTopics
 };
