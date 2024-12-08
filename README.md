@@ -119,7 +119,7 @@ A scheduler is implemented to run at the start of every hour (`0 * * * *`). This
 
 ## Tech Stack
 
-- **Backend Framework:** Node.js, Express.js
+- **Backend Framework:** Node.js (v18.19.0 LTS), Express.js
 - **Database:** MySQL
 - **ORM:** Sequelize
 - **NLP Library:** Compromise
